@@ -20,11 +20,22 @@ import {
   Button,
   StatusBar,
   TextInput,
+  TouchableOpacity,
 } from 'react-native';
+import {connect, Provider} from 'react-redux';
+import {homeCountAdd, homeCountCut} from './src/action/home';
+import {countSelector} from './src/selector/home';
+import store from './src/store';
 
 const Stack = createStackNavigator();
 
-function HomeScreen({navigation, route}) {
+function HomeScreenComponent({
+  navigation,
+  route,
+  count = 0,
+  homeCountAdd,
+  homeCountCut,
+}) {
   const {params} = route;
   React.useEffect(() => {
     if (params?.post) {
@@ -33,6 +44,17 @@ function HomeScreen({navigation, route}) {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [params?.post]);
+
+  const onAdd = () => {
+    homeCountAdd(count + 1);
+  };
+  const onMinus = () => {
+    homeCountAdd(count - 1);
+  };
+
+  const onDel = () => {
+    homeCountCut();
+  };
 
   return (
     <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
@@ -52,9 +74,34 @@ function HomeScreen({navigation, route}) {
         title="Update the title"
         onPress={() => navigation.setOptions({title: 'Updated!'})} // 修改导航title
       />
+
+      <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
+        <Text>{count}</Text>
+        <Button onPress={onAdd} title="+" />
+        <Button onPress={onMinus} title="-" />
+        <Button onPress={onDel} title="del" />
+      </View>
     </View>
   );
 }
+
+function mapStateToProps(state) {
+  return {
+    count: countSelector(state),
+  };
+}
+
+function mapDispatchToProps(dispatch) {
+  return {
+    homeCountAdd,
+    homeCountCut,
+  };
+}
+
+const HomeScreen = connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(HomeScreenComponent);
 
 function DetailsScreen({navigation, route}) {
   const {id, otherParam} = route.params;
@@ -108,58 +155,60 @@ function CreatePostScreen({navigation, route}) {
 
 const App: () => React$Node = () => {
   return (
-    <NavigationContainer>
-      <Stack.Navigator
-        // 通用option
-        screenOptions={{
-          headerStyle: {
-            backgroundColor: '#f4511e',
-          },
-          headerTintColor: '#fff',
-          headerTitleStyle: {
-            fontWeight: 'bold',
-          },
-        }}>
-        <Stack.Screen
-          name="Home"
-          component={HomeScreen}
-          options={{
-            title: 'Home Page',
-            // 自定义导航栏标题样式
+    <Provider store={store}>
+      <NavigationContainer>
+        <Stack.Navigator
+          // 通用option
+          screenOptions={{
             headerStyle: {
-              backgroundColor: '#969696',
+              backgroundColor: '#f4511e',
             },
             headerTintColor: '#fff',
             headerTitleStyle: {
               fontWeight: 'bold',
             },
-            headerRight: () => (
-              <Button
-                onPress={() => alert('This is a button!')}
-                title="Info"
-                color="#fff"
-              />
-            ),
-            headerLeft: () => (
-              <Button
-                onPress={() => alert('This is a Left button!')}
-                title="Left"
-                color="#fff"
-              />
-            ),
-            headerShown: false,
-          }}
-        />
-        <Stack.Screen
-          name="Detail"
-          component={DetailsScreen}
-          initialParams={{id: 666, otherParam: 'init params'}}
-          options={({route}) => ({title: `ID: ${route.params.id}`})}
-        />
-        <Stack.Screen name="Tab" component={Tab} />
-        <Stack.Screen name="PostScreen" component={CreatePostScreen} />
-      </Stack.Navigator>
-    </NavigationContainer>
+          }}>
+          <Stack.Screen
+            name="Home"
+            component={HomeScreen}
+            options={{
+              title: 'Home Page',
+              // 自定义导航栏标题样式
+              headerStyle: {
+                backgroundColor: '#969696',
+              },
+              headerTintColor: '#fff',
+              headerTitleStyle: {
+                fontWeight: 'bold',
+              },
+              headerRight: () => (
+                <Button
+                  onPress={() => alert('This is a button!')}
+                  title="Info"
+                  color="#fff"
+                />
+              ),
+              headerLeft: () => (
+                <Button
+                  onPress={() => alert('This is a Left button!')}
+                  title="Left"
+                  color="#fff"
+                />
+              ),
+              headerShown: false,
+            }}
+          />
+          <Stack.Screen
+            name="Detail"
+            component={DetailsScreen}
+            initialParams={{id: 666, otherParam: 'init params'}}
+            options={({route}) => ({title: `ID: ${route.params.id}`})}
+          />
+          <Stack.Screen name="Tab" component={Tab} />
+          <Stack.Screen name="PostScreen" component={CreatePostScreen} />
+        </Stack.Navigator>
+      </NavigationContainer>
+    </Provider>
   );
 };
 
