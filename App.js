@@ -11,17 +11,7 @@ import 'react-native-gesture-handler';
 import Tab from './src/pages';
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
-import {
-  SafeAreaView,
-  StyleSheet,
-  ScrollView,
-  View,
-  Text,
-  Button,
-  StatusBar,
-  TextInput,
-  TouchableOpacity,
-} from 'react-native';
+import {View, Text, Button, TextInput, StyleSheet} from 'react-native';
 import {connect, Provider} from 'react-redux';
 import {homeCountAdd, homeCountCut} from './src/action/home';
 import {countSelector} from './src/selector/home';
@@ -33,8 +23,8 @@ function HomeScreenComponent({
   navigation,
   route,
   count = 0,
-  homeCountAdd,
-  homeCountCut,
+  // homeCountAdd,
+  // homeCountCut,
 }) {
   const {params} = route;
   React.useEffect(() => {
@@ -57,9 +47,9 @@ function HomeScreenComponent({
   };
 
   return (
-    <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
+    <View style={styles.detailWrapper}>
       <Text>Home Screen</Text>
-      <Text style={{margin: 10}}>Post: {route.params?.post}</Text>
+      <Text>Post: {route.params?.post}</Text>
       <Text>{JSON.stringify(navigation, null, 4)}</Text>
       <Button title="Go to Tab" onPress={() => navigation.navigate('Tab')} />
       <Button
@@ -75,7 +65,7 @@ function HomeScreenComponent({
         onPress={() => navigation.setOptions({title: 'Updated!'})} // 修改导航title
       />
 
-      <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
+      <View style={styles.detailWrapper}>
         <Text>{count}</Text>
         <Button onPress={onAdd} title="+" />
         <Button onPress={onMinus} title="-" />
@@ -106,7 +96,7 @@ const HomeScreen = connect(
 function DetailsScreen({navigation, route}) {
   const {id, otherParam} = route.params;
   return (
-    <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
+    <View style={styles.detailWrapper}>
       <Text>Details Screen</Text>
       <Text>itemId: {JSON.stringify(id)}</Text>
       <Text>otherParam: {JSON.stringify(otherParam)}</Text>
@@ -138,7 +128,7 @@ function CreatePostScreen({navigation, route}) {
       <TextInput
         multiline
         placeholder="What's on your mind?"
-        style={{height: 200, padding: 10, backgroundColor: 'white'}}
+        style={styles.inputWrapper}
         value={postText}
         onChangeText={setPostText}
       />
@@ -153,7 +143,7 @@ function CreatePostScreen({navigation, route}) {
   );
 }
 
-const App: () => React$Node = () => {
+const App = () => {
   return (
     <Provider store={store}>
       <NavigationContainer>
@@ -177,20 +167,20 @@ const App: () => React$Node = () => {
               headerStyle: {
                 backgroundColor: '#969696',
               },
-              headerTintColor: '#fff',
+              headerTitnColor: '#fff',
               headerTitleStyle: {
                 fontWeight: 'bold',
               },
               headerRight: () => (
                 <Button
-                  onPress={() => alert('This is a button!')}
+                  onPress={() => console.log('This is a button!')}
                   title="Info"
                   color="#fff"
                 />
               ),
               headerLeft: () => (
                 <Button
-                  onPress={() => alert('This is a Left button!')}
+                  onPress={() => console.log('This is a Left button!')}
                   title="Left"
                   color="#fff"
                 />
@@ -211,5 +201,18 @@ const App: () => React$Node = () => {
     </Provider>
   );
 };
+
+const styles = StyleSheet.create({
+  detailWrapper: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  inputWrapper: {
+    height: 200,
+    padding: 10,
+    backgroundColor: 'white',
+  },
+});
 
 export default App;

@@ -8,14 +8,11 @@
 
 import React, {useState, useEffect} from 'react';
 import {
-  SafeAreaView,
   StyleSheet,
-  ScrollView,
   View,
   Text,
   StatusBar,
   Image,
-  TextInput,
   FlatList,
   RefreshControl,
 } from 'react-native';
@@ -34,7 +31,7 @@ import MoviceIntro from '../../components/movice_intro';
 // const REQUEST_URL =
 //   'https://raw.githubusercontent.com/facebook/react-native/0.51-stable/docs/MoviesExample.json';
 
-const Home: () => React$Node = () => {
+const Home = () => {
   // const [movies, setMovies] = useState();
   const [goodsData, setGoodsData] = useState({data: [], page: 0});
   const [loading, setLoading] = useState(false);
@@ -79,7 +76,7 @@ const Home: () => React$Node = () => {
     },
   ];
 
-  const fetchGoodsData = (page = 0) => {
+  const fetchGoodsData = async (page = 0) => {
     if (loading) {
       return;
     }
@@ -88,7 +85,7 @@ const Home: () => React$Node = () => {
     }
     setLoading(true);
     try {
-      new Promise((resolve) => {
+      await new Promise((resolve) => {
         setTimeout(() => {
           const NewGoodsList = [];
           const perPage = 8;
@@ -148,9 +145,7 @@ const Home: () => React$Node = () => {
         infinite
         afterChange={onHorizontalSelectedIndexChange}>
         {bannerImgList.map((url) => (
-          <View
-            key={url}
-            style={[styles.containerHorizontal, {backgroundColor: 'red'}]}>
+          <View key={url} style={[styles.containerHorizontal]}>
             <Image
               source={{
                 uri: url,
@@ -176,10 +171,7 @@ const Home: () => React$Node = () => {
     <>
       <StatusBar barStyle="dark-content" />
       {/*<SafeAreaView>*/}
-      <View
-        style={{
-          backgroundColor: 'white',
-        }}>
+      <View style={styles.bgWrapper}>
         <SearchBar placeholder="搜索喜欢的商品" showCancelButton />
         <FlatList
           // data={movies}
@@ -202,10 +194,7 @@ const Home: () => React$Node = () => {
           )}
           style={styles.list}
           numColumns={2}
-          columnWrapperStyle={{
-            paddingLeft: 10,
-            paddingRight: 10,
-          }}
+          columnWrapperStyle={styles.listWrapper}
           renderItem={({item, index}) => (
             <MoviceIntro key={item.id} info={item} idx={index} />
           )}
@@ -218,18 +207,20 @@ const Home: () => React$Node = () => {
 };
 
 const styles = StyleSheet.create({
+  bgWrapper: {
+    backgroundColor: 'white',
+  },
+  listWrapper: {
+    paddingLeft: 10,
+    paddingRight: 10,
+  },
   container: {
     flex: 1,
-    // paddingTop: 22,
   },
   list: {
-    // paddingTop: 20,
     paddingBottom: 188,
     marginBottom: 49,
     backgroundColor: '#F5FCFF',
-    // justifyContent: 'space-between',
-    // justifyContent: 'center',
-    // paddingBottom: tab_bar_height,
   },
   wrapper: {
     backgroundColor: '#fff',

@@ -12,13 +12,13 @@ import {Icon, SearchBar, TabBar} from '@ant-design/react-native';
 import {Colors} from 'react-native/Libraries/NewAppScreen';
 import Home from './Home';
 
-const MenuTab: () => React$Node = () => {
+const MenuTab = () => {
   const [selectedTab, SetSelectedTab] = useState('homeTab');
   const renderContent = (pageText) => {
     return (
-      <View style={{flex: 1, alignItems: 'center', backgroundColor: 'white'}}>
+      <View style={styles.searchWrapper}>
         <SearchBar placeholder="Search" showCancelButton />
-        <Text style={{margin: 50}}>{pageText}</Text>
+        <Text>{pageText}</Text>
       </View>
     );
   };
@@ -110,6 +110,11 @@ const styles = StyleSheet.create({
     padding: 10,
     fontSize: 18,
     height: 44,
+  },
+  searchWrapper: {
+    flex: 1,
+    alignItems: 'center',
+    backgroundColor: 'white',
   },
 });
 
